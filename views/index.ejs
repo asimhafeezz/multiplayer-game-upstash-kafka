@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="/styles.css" />
+		<title>Two-Player Game</title>
+	</head>
+	<body>
+		<div class="player" id="player1">P1</div>
+		<div class="player" id="player2">P2</div>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			const socket = io()
+
+			const player1 = document.getElementById("player1")
+			const player2 = document.getElementById("player2")
+
+			const PLAYER_SPEED = 10
+
+			let player1Position = 0
+			let player2Position = 0
+
+			function updatePositions() {
+				player1.style.top = player1Position + "px"
+				player2.style.top = player2Position + "px"
+			}
+
+			document.addEventListener("keydown", event => {
+				const key = event.key
+				if (key === "ArrowUp") {
+					player1Position = Math.max(player1Position - PLAYER_SPEED, 0)
+					updatePlayerPosition(1, player1Position)
+				} else if (key === "ArrowDown") {
+					player1Position = Math.min(
+						player1Position + PLAYER_SPEED,
+						window.innerHeight - 50
+					)
+					updatePlayerPosition(1, player1Position)
+				} else if (key === "w") {
+					player2Position = Math.max(player2Position - PLAYER_SPEED, 0)
+					updatePlayerPosition(2, player2Position)
+				} else if (key === "s") {
+					player2Position = Math.min(
+						player2Position + PLAYER_SPEED,
+						window.innerHeight - 50
+					)
+					updatePlayerPosition(2, player2Position)
+				}
+
+				updatePositions()
+			})
+
+			function updatePlayerPosition(playerId, position) {
+				socket.emit("player-state-change", {
+					id: playerId,
+					name: "player" + playerId,
+					y: position,
+				})
+			}
+
+			socket.on("update-state-by-consumer", data => {
+				const newData = data.players
+				//iterate through the array and update the position
+				newData.forEach(function (player) {
+					console.log("player", player)
+					if (player.id === 1) {
+						player1Position = player.y
+					} else if (player.id === 2) {
+						player2Position = player.y
+					}
+				})
+
+				updatePositions()
+			})
+		</script>
+	</body>
+</html>
