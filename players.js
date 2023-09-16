@@ -1,4 +1,4 @@
-const { io } = require("./socketServer")
+const { io } = require("./socket/socketServer")
 
 let players = [
 	{

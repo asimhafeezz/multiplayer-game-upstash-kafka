@@ -1,8 +1,11 @@
 const express = require("express")
+const dotenv = require("dotenv")
 const path = require("path")
-const { produce, consume } = require("./config")
+dotenv.config()
 
-const { app, server, io } = require("./socketServer")
+const { produce, consume } = require("./config/config")
+
+const { app, server, io } = require("./socket/socketServer")
 const { updatePlayerState } = require("./players")
 
 // Serve static files

@@ -1,12 +1,12 @@
 const { Kafka } = require("kafkajs")
-const { updatePlayerState } = require("./players")
+const { updatePlayerState } = require("../players")
 
 const kafka = new Kafka({
-	brokers: ["upright-shad-9858-us1-kafka.upstash.io:9092"],
+	brokers: [process.env.UPSTASH_KAFKA_BROKER_URL],
 	sasl: {
 		mechanism: "scram-sha-256",
-		username: "dXByaWdodC1zaGFkLTk4NTgkgKQrp3Gg8rg1l6rbQGcmy8dh9JVo7gxX8S5P9rw",
-		password: "NjU5ZTkyNjctMzVmZC00Y2M4LTg1ZGUtYmY2NzIwOGZkNmI5",
+		username: process.env.UPSTASH_KAFKA_USERNAME,
+		password: process.env.UPSTASH_KAFKA_PASSWORD,
 	},
 	ssl: true,
 })
